@@ -1,0 +1,25 @@
+{
+  "name": "battlemetricsapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Curse345/BattleMetricsAPI.git"
+  },
+  "keywords": [
+    "battlemetrics"
+  ],
+  "author": "curse",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Curse345/BattleMetricsAPI/issues"
+  },
+  "homepage": "https://github.com/Curse345/BattleMetricsAPI#readme",
+  "dependencies": {
+    "axios": "^0.20.0"
+  }
+}
