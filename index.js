@@ -1,22 +1,19 @@
 const axios = require('axios');
 
-//var bearertoken;
-
-/*function BMSettings(config) {
-    bearertoken = config.bearertoken;
-}*/
+function login(config) {
+    axios.defaults.headers.common['Authorization'] = config.token
+}
 
 axios.defaults.baseURL = 'https://api.battlemetrics.com';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-//axios.defaults.headers.common['Authorization'] = bearertoken
 
-async function serverInfoByName(serverName, game) {
-    let servers = [];
+async function getServerInfoByName(serverName, game) {
+    let info = [];
     await axios.get(`/servers?filter[search]='${serverName}&filter[game]=${game}`).then(res => {
         res.data.data.forEach(el => {
             var attributes = el.attributes;
 
-            let info = {
+            let data = {
                 Id: attributes.id,
                 Name: attributes.name,
                 Players: attributes.players,
@@ -25,18 +22,18 @@ async function serverInfoByName(serverName, game) {
                 Rank: attributes.rank,
                 Description: attributes.details.rust_description
             }
-            servers.push(info);
+            info.push(data);
         });
     })
-    return servers;
+    return info;
 }
 
-async function serverInfoById(serverId) {
-    let server = [];
+async function getServerInfoById(serverId) {
+    let info = [];
     await axios.get(`/servers/${serverId}`).then(res => {
         var attributes = res.data.data.attributes;
 
-        let info = {
+        let data = {
             Id: attributes.id,
             Name: attributes.name,
             Players: attributes.players,
@@ -46,17 +43,17 @@ async function serverInfoById(serverId) {
             Description: attributes.details.rust_description
         }
 
-        server.push(info);
+        info.push(data);
     })
-    return server;
+    return info;
 }
 
-async function gameInfo(game) {
-    let data = [];
+async function getGameInfo(game) {
+    let info = [];
     await axios.get(`/games/${game}`).then(res => {
         var attributes = res.data.data.attributes;
 
-        let info = {
+        let data = {
             AppID: attributes.metadata.appid,
             Players: attributes.players,
             Servers: attributes.servers,
@@ -67,83 +64,95 @@ async function gameInfo(game) {
             MinPlayers30D: attributes.minPlayers30D,
             MaxPlayers30D: attributes.maxPlayers30D
         }
-        data.push(info);
+        info.push(data);
     })
-    return data;
+    return info;
 }
 
 async function getServerID(serverName, game) {
-    let servers = [];
+    let info = [];
     await axios.get(`/servers?filter[search]='${serverName}&filter[game]=${game}`).then(res => {
         res.data.data.forEach(el => {
             var attributes = el.attributes;
 
-            let info = {
+            let data = {
                 Id: attributes.id,
                 Name: attributes.name,
             }
-            servers.push(info);
+            info.push(data);
         });
     })
-    return servers;
+    return info;
 }
 
 async function getPlayTimeHistory(playerId, serverId, startTime, stopTime) {
-    let servers = [];
+    let info = [];
     await axios.get(`https://api.battlemetrics.com/players/${playerId}/time-played-history/${serverId}?start=${startTime}T12%3A00%3A00Z&stop=${stopTime}T12%3A00%3A00Z`).then(res => {
-        servers.push(res.data.data);
+        info.push(res.data.data);
     })
-    return servers;
+    return info;
 }
 
 async function getServerPlayerInfo(playerId, serverId) {
-    let servers = [];
+    let info = [];
     await axios.get(`https://api.battlemetrics.com/players/${playerId}/servers/${serverId}`).then(res => {
         var attributes = res.data.data.attributes;
 
-        let info = {
+        let data = {
             FirstSeen: attributes.firstSeen,
             LastSeen: attributes.lastSeen,
             TimePlayed: attributes.timePlayed,
             Online: attributes.online
         }
 
-        servers.push(info)
+        info.push(data)
     })
-    return servers;
+    return info;
 }
 
 async function getPlayerInfo(playerId) {
-    let servers = [];
+    let info = [];
     await axios.get(`https://api.battlemetrics.com/players/${playerId}`).then(res => {
         var attributes = res.data.data.attributes;
 
-        let info = {
+        let data = {
             Name: attributes.name,
             Private: attributes.private,
             PossitiveMatch: attributes.positiveMatch,
             CreatedAt: attributes.createdAt,
             UpdatedAt: attributes.updatedAt
         }
-        servers.push(info);
+        info.push(data);
     })
     return servers;
 }
 
-/*async function banInfo(banid) {
-    console.log(bearertoken)
-    console.log(banid)
+async function getBanInfo(banid) {
+    let info;
     await axios.get(`/bans/${banid}`).then(res => {
-        console.log(res);
+        let data = res.data.data;
+        info = data;
     })
-}*/
+    return info;
+}
 
-module.exports.gameInfo = gameInfo;
-module.exports.serverInfoByName = serverInfoByName;
-module.exports.serverInfoById = serverInfoById;
+async function getBans() {
+    let info = [];
+    await axios.get(`/bans`).then(res => {
+        res.data.data.forEach(el => {
+            info.push(el);
+        })
+    })
+    return info;
+}
+
+module.exports.getGameInfo = getGameInfo;
+module.exports.getServerInfoByName = getServerInfoByName;
+module.exports.getServerInfoById = getServerInfoById;
 module.exports.getServerID = getServerID;
 module.exports.getPlayTimeHistory = getPlayTimeHistory;
 module.exports.getServerPlayerInfo = getServerPlayerInfo;
 module.exports.getPlayerInfo = getPlayerInfo;
-//module.exports.BMSettings = BMSettings;
-//module.exports.banInfo = banInfo;
+module.exports.login = login;
+module.exports.getBanInfo = getBanInfo;
+module.exports.getBans = getBans;
