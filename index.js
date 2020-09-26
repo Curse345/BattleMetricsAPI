@@ -88,6 +88,48 @@ async function getServerID(serverName, game) {
     return servers;
 }
 
+async function getPlayTimeHistory(playerId, serverId, startTime, stopTime) {
+    let servers = [];
+    await axios.get(`https://api.battlemetrics.com/players/${playerId}/time-played-history/${serverId}?start=${startTime}T12%3A00%3A00Z&stop=${stopTime}T12%3A00%3A00Z`).then(res => {
+        servers.push(res.data.data);
+    })
+    return servers;
+}
+
+async function getServerPlayerInfo(playerId, serverId) {
+    let servers = [];
+    await axios.get(`https://api.battlemetrics.com/players/${playerId}/servers/${serverId}`).then(res => {
+        var attributes = res.data.data.attributes;
+
+        let info = {
+            FirstSeen: attributes.firstSeen,
+            LastSeen: attributes.lastSeen,
+            TimePlayed: attributes.timePlayed,
+            Online: attributes.online
+        }
+
+        servers.push(info)
+    })
+    return servers;
+}
+
+async function getPlayerInfo(playerId) {
+    let servers = [];
+    await axios.get(`https://api.battlemetrics.com/players/${playerId}`).then(res => {
+        var attributes = res.data.data.attributes;
+
+        let info = {
+            Name: attributes.name,
+            Private: attributes.private,
+            PossitiveMatch: attributes.positiveMatch,
+            CreatedAt: attributes.createdAt,
+            UpdatedAt: attributes.updatedAt
+        }
+        servers.push(info);
+    })
+    return servers;
+}
+
 /*async function banInfo(banid) {
     console.log(bearertoken)
     console.log(banid)
@@ -100,5 +142,8 @@ module.exports.gameInfo = gameInfo;
 module.exports.serverInfoByName = serverInfoByName;
 module.exports.serverInfoById = serverInfoById;
 module.exports.getServerID = getServerID;
+module.exports.getPlayTimeHistory = getPlayTimeHistory;
+module.exports.getServerPlayerInfo = getServerPlayerInfo;
+module.exports.getPlayerInfo = getPlayerInfo;
 //module.exports.BMSettings = BMSettings;
 //module.exports.banInfo = banInfo;
