@@ -40,6 +40,7 @@ async function getServerInfoById(serverId) {
             MaxPlayers: attributes.maxPlayers,
             Country: attributes.country,
             Rank: attributes.rank,
+            ServerFPS: attributes.details.rust_fps,
             Description: attributes.details.rust_description
         }
 
